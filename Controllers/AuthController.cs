@@ -1,25 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
-using JobOffersMVC.Models;
+﻿using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
+using JobOffersMVC.ViewModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
 {
     public class AuthController : Controller
     {
-        string connectionString = @"Data Source=localhost;
-Initial Catalog=JobOffersDB;
-Integrated Security=True;
-Connect Timeout=30;
-Encrypt=False;
-TrustServerCertificate=False;
-ApplicationIntent=ReadWrite;
-MultiSubnetFailover=False";
 
         public AuthController()
         {
@@ -31,17 +18,22 @@ MultiSubnetFailover=False";
         }
 
         [HttpPost]
-        public IActionResult Login(User model)
+        public IActionResult Login(UserLoginVM model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             UsersRepository repo = new UsersRepository();
             User user = repo.GetByUsernameAndPassword(model.Username, model.Password);
 
             if (user != null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("List", "Users");
             }
 
-            return View();
+            return View(model);
         }
 
         public IActionResult Register()
@@ -50,10 +42,25 @@ MultiSubnetFailover=False";
         }
 
         [HttpPost]
-        public IActionResult Register(User model)
+        public IActionResult Register(UserRegisterVM model)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            User u = new User()
+            {
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Password = model.Password,
+                Username = model.Username
+            };
+
             UsersRepository repo = new UsersRepository();
-            repo.Insert(model);
+            repo.Save(u);
             return RedirectToAction("Login");
         }
     }
