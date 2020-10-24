@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
 using JobOffersMVC.ViewModels.Users;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
 {
+    [ServiceFilter(typeof(AuthenticatedFilter))]
     public class UsersController : Controller
     {
         public IActionResult List()

@@ -1,5 +1,7 @@
-﻿using JobOffersMVC.Models;
+﻿using JobOffersMVC.Filters;
+using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
+using JobOffersMVC.Services;
 using JobOffersMVC.ViewModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +14,13 @@ namespace JobOffersMVC.Controllers
         {
         }
 
+        [ServiceFilter(typeof(NonAuthenticatedFilter))]
         public IActionResult Login()
         {
             return View();
         }
 
+        [ServiceFilter(typeof(NonAuthenticatedFilter))]
         [HttpPost]
         public IActionResult Login(UserLoginVM model)
         {
@@ -30,17 +34,20 @@ namespace JobOffersMVC.Controllers
 
             if (user != null)
             {
+                AuthService.LoggedUser = user;
                 return RedirectToAction("List", "Users");
             }
 
             return View(model);
         }
 
+        [ServiceFilter(typeof(NonAuthenticatedFilter))]
         public IActionResult Register()
         {
             return View();
         }
 
+        [ServiceFilter(typeof(NonAuthenticatedFilter))]
         [HttpPost]
         public IActionResult Register(UserRegisterVM model)
         {
@@ -61,6 +68,12 @@ namespace JobOffersMVC.Controllers
 
             UsersRepository repo = new UsersRepository();
             repo.Save(u);
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult Logout()
+        {
+            AuthService.LoggedUser = null;
             return RedirectToAction("Login");
         }
     }
