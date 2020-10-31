@@ -43,6 +43,10 @@
                             </li>
 
                             <li class="nav-item">
+                                @Html.ActionLink("My Job Offers", "List", "JobOffers", new { id = JobOffersMVC.Services.AuthService.LoggedUser.ID })
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
                             </li>
                         }

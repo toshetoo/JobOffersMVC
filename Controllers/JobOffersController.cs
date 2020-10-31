@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JobOffersMVC.Filters;
+using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
+using JobOffersMVC.Repositories.Abstraction;
 using JobOffersMVC.Services;
 using JobOffersMVC.ViewModels.JobOffers;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language;
 
@@ -14,10 +17,25 @@ namespace JobOffersMVC.Controllers
     [ServiceFilter(typeof(AuthenticatedFilter))]
     public class JobOffersController : Controller
     {
-        public IActionResult List()
+        private IJobOffersRepository _repo;
+
+        public JobOffersController(IJobOffersRepository repo)
         {
-            var repo = new JobOffersRepository();
-            var items = repo.GetAll();
+            _repo = repo;
+        }
+
+        public IActionResult List(int? id)
+        {
+            List<JobOffer> items;
+            if (id.HasValue)
+            {
+                items = _repo.GetByCreatorId(id.Value).ToList();
+            } 
+            else
+            {
+                items = _repo.GetAll().ToList();
+            }
+            
 
             var vms = new List<JobOffersListVM>();
 
@@ -35,10 +53,28 @@ namespace JobOffersMVC.Controllers
             return View(vms);
         }
 
+        //public IActionResult ListForUser()
+        //{
+        //    var entities = _repo.GetByCreatorId(AuthService.LoggedUser.ID);
+        //    var viewModels = new List<JobOffersListVM>();
+
+        //    foreach(var item in entities)
+        //    {
+        //        viewModels.Add(new JobOffersListVM()
+        //        {
+        //            ID = item.ID,
+        //            Title = item.Title,
+        //            Description = item.Description,
+        //            CreatorName = $"{AuthService.LoggedUser.FirstName} {AuthService.LoggedUser.LastName}"
+        //        });
+        //    }
+
+        //    return View(vms);
+        //}
+
         public IActionResult Edit(int id)
         {
-            var repo = new JobOffersRepository();
-            var item = repo.GetById(id);
+            var item = _repo.GetById(id);
 
             if (item == null)
             {
@@ -64,8 +100,7 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            var repo = new JobOffersRepository();
-            var item = repo.GetById(model.ID);
+            var item = _repo.GetById(model.ID);
 
             if (item == null)
             {
@@ -75,15 +110,14 @@ namespace JobOffersMVC.Controllers
 
             item.Title = model.Title;
             item.Description = model.Description;
-            repo.Save(item);
+            _repo.Save(item);
 
             return RedirectToAction("List");
         }
 
         public IActionResult Details(int id)
         {
-            var repo = new JobOffersRepository();
-            var item = repo.GetById(id);
+            var item = _repo.GetById(id);
             
             if (item == null)
             {
@@ -103,8 +137,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Delete(int id)
         {
-            var repo = new JobOffersRepository();
-            repo.Delete(id);
+            _repo.Delete(id);
 
             return RedirectToAction("List");
         }

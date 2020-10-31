@@ -1,6 +1,7 @@
 ﻿using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
+using JobOffersMVC.Repositories.Abstraction;
 using JobOffersMVC.Services;
 using JobOffersMVC.ViewModels.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,10 @@ namespace JobOffersMVC.Controllers
 {
     public class AuthController : Controller
     {
-
-        public AuthController()
+        private readonly IUsersRepository _repo;
+        public AuthController(IUsersRepository repo)
         {
+            _repo = repo;
         }
 
         [ServiceFilter(typeof(NonAuthenticatedFilter))]
@@ -29,8 +31,7 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            UsersRepository repo = new UsersRepository();
-            User user = repo.GetByUsernameAndPassword(model.Username, model.Password);
+            User user = _repo.GetByUsernameAndPassword(model.Username, model.Password);
 
             if (user != null)
             {
@@ -66,8 +67,7 @@ namespace JobOffersMVC.Controllers
                 Username = model.Username
             };
 
-            UsersRepository repo = new UsersRepository();
-            repo.Save(u);
+            _repo.Save(u);
             return RedirectToAction("Login");
         }
 

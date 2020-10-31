@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
+using JobOffersMVC.Repositories.Abstraction;
 using JobOffersMVC.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +14,16 @@ namespace JobOffersMVC.Controllers
     [ServiceFilter(typeof(AuthenticatedFilter))]
     public class UsersController : Controller
     {
+        private readonly IUsersRepository _repo;
+
+        public UsersController(IUsersRepository repo)
+        {
+            _repo = repo;
+        }
+
         public IActionResult List()
         {
-            var repo = new UsersRepository();
-            var users = repo.GetAll();
+            var users = _repo.GetAll();
 
             var usersVMs = new List<UsersListVM>();
 
@@ -36,8 +43,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Edit(int id)
         {
-            var repo = new UsersRepository();
-            var user = repo.GetById(id);
+            var user = _repo.GetById(id);
 
             // create
             if (user == null)
@@ -66,8 +72,7 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            var repo = new UsersRepository();
-            var user = repo.GetById(model.ID);
+            var user = _repo.GetById(model.ID);
 
             // create
             if (user == null)
@@ -79,15 +84,14 @@ namespace JobOffersMVC.Controllers
             user.Password = model.Password;
             user.Email = model.Email;
 
-            repo.Save(user);
+            _repo.Save(user);
 
             return RedirectToAction("List");
         }
 
         public IActionResult Details(int id)
         {
-            var repo = new UsersRepository();
-            var user = repo.GetById(id);
+            var user = _repo.GetById(id);
 
             if (user == null)
             {
@@ -108,8 +112,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Delete(int id)
         {
-            var repo = new UsersRepository();
-            repo.Delete(id);
+            _repo.Delete(id);
 
             return RedirectToAction("List");
         }
