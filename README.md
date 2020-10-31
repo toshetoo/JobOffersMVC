@@ -4,6 +4,9 @@
 http://prntscr.com/vamjdp
 
 - Ако вече имате свален проекта, отваряте конзолата в папката на проекта и изпълнявате следните команди
+<pre>
 git fetch -a
 git checkout ef-implementation
 git pull
+</pre>
+
