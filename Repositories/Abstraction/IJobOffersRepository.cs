@@ -9,5 +9,8 @@ namespace JobOffersMVC.Repositories.Abstraction
     public interface IJobOffersRepository: IBaseRepository<JobOffer>
     {
         IEnumerable<JobOffer> GetByCreatorId(int id);
+        JobOffer GetByIdFull(int id);
+
+        void DeleteAllForJobOffer(int id);
     }
 }

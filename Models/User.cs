@@ -14,5 +14,7 @@ namespace JobOffersMVC.Models
         public string Email { get; set; }
 
         public virtual List<JobOffer> JobOffers { get; set; }
+        public virtual List<UserApplication> UserApplications { get; set; }
+
     }
 }

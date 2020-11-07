@@ -5,36 +5,47 @@
 }
 
 <h1>Details</h1>
+@if (!Model.HasApplied)
+{
+    @Html.ActionLink("Apply to this offer", "Apply", "UserApplications", new { jobOfferId = Model.ID });
+}
 
 <div>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ID)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ID)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CreatorName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CreatorName)
         </dd>
     </dl>
 </div>
+
+<hr />
+<h4>User applications for this job offer: </h4>
+<div>
+    @Html.Partial("~/Views/Shared/UserApplications/List.cshtml", Model.UserApplications);
+</div>
+
 <div>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     <a asp-action="List">Back to List</a>

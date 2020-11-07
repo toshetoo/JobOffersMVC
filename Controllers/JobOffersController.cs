@@ -8,6 +8,7 @@ using JobOffersMVC.Repositories;
 using JobOffersMVC.Repositories.Abstraction;
 using JobOffersMVC.Services;
 using JobOffersMVC.ViewModels.JobOffers;
+using JobOffersMVC.ViewModels.UserApplications;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language;
@@ -46,7 +47,7 @@ namespace JobOffersMVC.Controllers
                     ID = item.ID,
                     Title = item.Title,
                     Description = item.Description,
-                    CreatorName = $"{AuthService.LoggedUser.FirstName} {AuthService.LoggedUser.LastName}"
+                    CreatorName = $"{item.Creator.FirstName} {item.Creator.LastName}",
                 });
             }
 
@@ -117,7 +118,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Details(int id)
         {
-            var item = _repo.GetById(id);
+            var item = _repo.GetByIdFull(id);
             
             if (item == null)
             {
@@ -129,7 +130,18 @@ namespace JobOffersMVC.Controllers
                 ID = item.ID,
                 Title = item.Title,
                 Description = item.Description,
-                CreatorName = $"{AuthService.LoggedUser.FirstName} {AuthService.LoggedUser.LastName}"
+                CreatorName = $"{item.Creator.FirstName} {item.Creator.LastName}",
+                HasApplied = item.UserApplications.Exists(item => item.UserId == AuthService.LoggedUser.ID),
+                UserApplications = new UserApplicationsListVM()
+                {
+                    UserApplications = item.UserApplications.Select(app => new UserApplicationDetailsVM
+                    {
+                        Id = app.ID,
+                        Status = app.Status,
+                        ApplicantName = $"{app.User.FirstName} {app.User.LastName}",
+                        JobOfferName = app.JobOffer.Title
+                    }).ToList()
+                }
             };
 
             return View(detailsVM);
@@ -137,7 +149,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Delete(int id)
         {
-            _repo.Delete(id);
+            _repo.DeleteAllForJobOffer(id);
 
             return RedirectToAction("List");
         }
