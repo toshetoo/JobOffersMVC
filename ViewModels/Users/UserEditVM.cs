@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace JobOffersMVC.ViewModels.Users
 {
-    public class UserEditVM
+    public class UserEditVM: BaseViewModel
     {
-        public int ID { get; set; }
         [Required]
         [MaxLength(20)]
         public string Username { get; set; }

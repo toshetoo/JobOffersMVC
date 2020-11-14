@@ -6,6 +6,9 @@ using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories.Abstraction;
 using JobOffersMVC.Services;
+using JobOffersMVC.Services.Abstractions;
+using JobOffersMVC.ViewModels.JobOffers;
+using JobOffersMVC.ViewModels.UserApplications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
@@ -13,26 +16,26 @@ namespace JobOffersMVC.Controllers
     [ServiceFilter(typeof(AuthenticatedFilter))]
     public class UserApplicationsController : Controller
     {
-        private readonly IJobOffersRepository jobOffersRepository;
-        private readonly IUserApplicationsRepository userApplicationsRepository;
+        private readonly IJobOffersService jobOffersService;
+        private readonly IUserApplicationsService userApplicationsService;
 
-        public UserApplicationsController(IJobOffersRepository repo, IUserApplicationsRepository userApplicationsRepository)
+        public UserApplicationsController(IJobOffersService jobOffersService, IUserApplicationsService userApplicationsService)
         {
-            this.jobOffersRepository = repo;
-            this.userApplicationsRepository = userApplicationsRepository;
+            this.jobOffersService = jobOffersService;
+            this.userApplicationsService = userApplicationsService;
         }
 
         public IActionResult Apply(int jobOfferId)
         {
 
-            JobOffer offer = jobOffersRepository.GetById(jobOfferId);
+            JobOfferEditVM offer = jobOffersService.GetById(jobOfferId);
 
             if (offer == null)
             {
                 return RedirectToAction("List", "JobOffers");
             }
 
-            this.userApplicationsRepository.Save(new UserApplication
+            this.userApplicationsService.Save(new UserApplicationEditVM
             {
                 JobOfferId = offer.ID,
                 UserId = AuthService.LoggedUser.ID,
@@ -44,7 +47,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Accept(int applicationId)
         {
-            UserApplication application = userApplicationsRepository.GetById(applicationId);
+            UserApplicationEditVM application = userApplicationsService.GetById(applicationId);
 
             if (application == null)
             {
@@ -57,14 +60,14 @@ namespace JobOffersMVC.Controllers
             }
 
             application.Status = UserApplicationStatus.Accepted;
-            userApplicationsRepository.Save(application);
+            userApplicationsService.Save(application);
 
             return RedirectToAction("Details", "JobOffers", new { id = application.JobOfferId });
         }
 
         public IActionResult Reject(int applicationId)
         {
-            UserApplication application = userApplicationsRepository.GetById(applicationId);
+            UserApplicationEditVM application = userApplicationsService.GetById(applicationId);
 
             if (application == null)
             {
@@ -77,7 +80,7 @@ namespace JobOffersMVC.Controllers
             }
 
             application.Status = UserApplicationStatus.Rejected;
-            userApplicationsRepository.Save(application);
+            userApplicationsService.Save(application);
 
             return RedirectToAction("Details", "JobOffers", new { id = application.JobOfferId });
         }

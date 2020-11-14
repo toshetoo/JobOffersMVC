@@ -1,4 +1,4 @@
-﻿@model IEnumerable<JobOffersMVC.ViewModels.Users.UsersListVM>
+﻿@model IEnumerable<JobOffersMVC.ViewModels.Users.UserDetailsVM>
 
 @{
     ViewData["Title"] = "List";
@@ -16,7 +16,10 @@
                 @Html.DisplayNameFor(model => model.Username)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
@@ -31,7 +34,10 @@
                 @Html.DisplayFor(modelItem => item.Username)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)

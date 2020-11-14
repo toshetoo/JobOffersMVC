@@ -40,6 +40,13 @@ namespace JobOffersMVC.Repositories
 
         public void Update(T item)
         {
+            T element = GetById(item.ID);
+
+            if (element != null)
+            {
+                _context.Entry(element).State = EntityState.Detached;
+            }
+
             _context.Entry(item).State = EntityState.Modified;
             _context.SaveChanges();
         }

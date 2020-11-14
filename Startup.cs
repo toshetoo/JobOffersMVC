@@ -2,10 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using JobOffersMVC.Filters;
 using JobOffersMVC.Repositories;
 using JobOffersMVC.Repositories.Abstraction;
 using JobOffersMVC.Repositories.Implementations;
+using JobOffersMVC.Services.Abstractions;
+using JobOffersMVC.Services.AutoMapper;
+using JobOffersMVC.Services.Helpers;
+using JobOffersMVC.Services.Implementations;
+using JobOffersMVC.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,9 +41,20 @@ namespace JobOffersMVC
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddSingleton(Configuration.GetSection("ApplicationSettings").Get<ApplicationSettings>());
+
+            services.AddAutoMapper(m => m.AddProfile(new AutoMapperConfiguration()));
+
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IJobOffersRepository, JobOffersRepository>();
             services.AddScoped<IUserApplicationsRepository, UserApplicationsRepository>();
+
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IJobOffersService, JobOffersService>();
+            services.AddScoped<IUserApplicationsService, UserApplicationsService>();
+
+            services.AddScoped<IFileHelperService, FileHelperService>();
+
             services.AddScoped<AuthenticatedFilter>();
             services.AddScoped<NonAuthenticatedFilter>();
         }

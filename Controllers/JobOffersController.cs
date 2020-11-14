@@ -1,57 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using JobOffersMVC.Filters;
-using JobOffersMVC.Models;
-using JobOffersMVC.Repositories;
-using JobOffersMVC.Repositories.Abstraction;
-using JobOffersMVC.Services;
+using JobOffersMVC.Services.Abstractions;
 using JobOffersMVC.ViewModels.JobOffers;
-using JobOffersMVC.ViewModels.UserApplications;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Language;
 
 namespace JobOffersMVC.Controllers
 {
     [ServiceFilter(typeof(AuthenticatedFilter))]
     public class JobOffersController : Controller
     {
-        private IJobOffersRepository _repo;
+        private IJobOffersService service;
 
-        public JobOffersController(IJobOffersRepository repo)
+        public JobOffersController(IJobOffersService service)
         {
-            _repo = repo;
+            this.service = service;
         }
 
         public IActionResult List(int? id)
         {
-            List<JobOffer> items;
+            List<JobOfferDetailsVM> items;
             if (id.HasValue)
             {
-                items = _repo.GetByCreatorId(id.Value).ToList();
+                items = service.GetByCreatorId(id.Value);
             } 
             else
             {
-                items = _repo.GetAll().ToList();
-            }
-            
-
-            var vms = new List<JobOffersListVM>();
-
-            foreach (var item in items)
-            {
-                vms.Add(new JobOffersListVM()
-                {
-                    ID = item.ID,
-                    Title = item.Title,
-                    Description = item.Description,
-                    CreatorName = $"{item.Creator.FirstName} {item.Creator.LastName}",
-                });
+                items = service.GetAll();
             }
 
-            return View(vms);
+            return View(items);
         }
 
         //public IActionResult ListForUser()
@@ -75,22 +52,14 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Edit(int id)
         {
-            var item = _repo.GetById(id);
+            var item = service.GetById(id);
 
             if (item == null)
             {
                 return View(new JobOfferEditVM());
             }
 
-            var editVM = new JobOfferEditVM()
-            {
-                ID = item.ID,
-                CreatorId = item.ID,
-                Title = item.Title,
-                Description = item.Description
-            };
-
-            return View(editVM);
+            return View(item);
         }
 
         [HttpPost]
@@ -101,55 +70,26 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            var item = _repo.GetById(model.ID);
-
-            if (item == null)
-            {
-                item = new Models.JobOffer();
-                item.CreatorId = AuthService.LoggedUser.ID;
-            }
-
-            item.Title = model.Title;
-            item.Description = model.Description;
-            _repo.Save(item);
+            service.Save(model);
 
             return RedirectToAction("List");
         }
 
         public IActionResult Details(int id)
         {
-            var item = _repo.GetByIdFull(id);
+            var item = service.GetDetails(id);
             
             if (item == null)
             {
                 return RedirectToAction("List");
             }
 
-            var detailsVM = new JobOfferDetailsVM()
-            {
-                ID = item.ID,
-                Title = item.Title,
-                Description = item.Description,
-                CreatorName = $"{item.Creator.FirstName} {item.Creator.LastName}",
-                HasApplied = item.UserApplications.Exists(item => item.UserId == AuthService.LoggedUser.ID),
-                UserApplications = new UserApplicationsListVM()
-                {
-                    UserApplications = item.UserApplications.Select(app => new UserApplicationDetailsVM
-                    {
-                        Id = app.ID,
-                        Status = app.Status,
-                        ApplicantName = $"{app.User.FirstName} {app.User.LastName}",
-                        JobOfferName = app.JobOffer.Title
-                    }).ToList()
-                }
-            };
-
-            return View(detailsVM);
+            return View(item);
         }
 
         public IActionResult Delete(int id)
         {
-            _repo.DeleteAllForJobOffer(id);
+            service.DeleteAllForJobOffer(id);
 
             return RedirectToAction("List");
         }

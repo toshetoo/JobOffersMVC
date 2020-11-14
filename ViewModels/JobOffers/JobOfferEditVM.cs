@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace JobOffersMVC.ViewModels.JobOffers
 {
-    public class JobOfferEditVM
+    public class JobOfferEditVM: BaseViewModel
     {
-        public int ID { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]

@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace JobOffersMVC.ViewModels.Users
 {
-    public class UserDetailsVM
+    public class UserDetailsVM: BaseViewModel
     {
-        public int ID { get; set; }
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

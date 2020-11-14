@@ -3,17 +3,19 @@ using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
 using JobOffersMVC.Repositories.Abstraction;
 using JobOffersMVC.Services;
+using JobOffersMVC.Services.Abstractions;
 using JobOffersMVC.ViewModels.Auth;
+using JobOffersMVC.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly IUsersRepository _repo;
-        public AuthController(IUsersRepository repo)
+        private readonly IUsersService service;
+        public AuthController(IUsersService service)
         {
-            _repo = repo;
+            this.service = service;
         }
 
         [ServiceFilter(typeof(NonAuthenticatedFilter))]
@@ -31,7 +33,7 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            User user = _repo.GetByUsernameAndPassword(model.Username, model.Password);
+            UserDetailsVM user = service.GetByUsernameAndPassword(model.Username, model.Password);
 
             if (user != null)
             {
@@ -58,16 +60,7 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            User u = new User()
-            {
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Password = model.Password,
-                Username = model.Username
-            };
-
-            _repo.Save(u);
+            service.Register(model);
             return RedirectToAction("Login");
         }
 

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace JobOffersMVC.ViewModels.UserApplications
 {
-    public class UserApplicationDetailsVM: BaseViewModel
+    public class UserApplicationEditVM: BaseViewModel
     {
-        public string ApplicantName { get; set; }
-        public string JobOfferName { get; set; }
+        public int UserId { get; set; }
+        public int JobOfferId { get; set; }
 
         public UserApplicationStatus Status { get; set; }
     }

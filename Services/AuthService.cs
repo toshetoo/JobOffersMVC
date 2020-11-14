@@ -1,4 +1,5 @@
 ﻿using JobOffersMVC.Models;
+using JobOffersMVC.ViewModels.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace JobOffersMVC.Services
 {
     public class AuthService
     {
-        public static User LoggedUser { get; set; }
+        public static UserDetailsVM LoggedUser { get; set; }
     }
 }
