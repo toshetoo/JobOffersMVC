@@ -1,6 +1,7 @@
 ﻿using JobOffersMVC.Models;
 using JobOffersMVC.ViewModels.Auth;
 using JobOffersMVC.ViewModels.Users;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace JobOffersMVC.Services.Abstractions
     {
         void Register(UserRegisterVM model);
         UserDetailsVM GetByUsernameAndPassword(string username, string password);
+        void AttachImage(int userId, IFormFile image);
     }
 }

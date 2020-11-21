@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JobOffersMVC.Services.Abstractions
 {
-    interface IFileHelperService
+    public interface IFileHelperService
     {
         string BuildFilePath(string directory, string filePath);
         void CreateFile(IFormFile file, string filePath);

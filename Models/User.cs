@@ -12,7 +12,7 @@ namespace JobOffersMVC.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-
+        public string ImagePath { get; set; }
         public virtual List<JobOffer> JobOffers { get; set; }
         public virtual List<UserApplication> UserApplications { get; set; }
 

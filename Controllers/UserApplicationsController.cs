@@ -9,6 +9,7 @@ using JobOffersMVC.Services;
 using JobOffersMVC.Services.Abstractions;
 using JobOffersMVC.ViewModels.JobOffers;
 using JobOffersMVC.ViewModels.UserApplications;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
@@ -38,7 +39,7 @@ namespace JobOffersMVC.Controllers
             this.userApplicationsService.Save(new UserApplicationEditVM
             {
                 JobOfferId = offer.ID,
-                UserId = AuthService.LoggedUser.ID,
+                UserId = HttpContext.Session.GetInt32("LoggedUserId").Value,
                 Status = UserApplicationStatus.Pending
             });
 

@@ -43,13 +43,13 @@ namespace JobOffersMVC.Services.Implementations
             return mapper.Map<TModel, TEditVM>(item);
         }
 
-        public void Insert(TEditVM item)
+        public virtual void Insert(TEditVM item)
         {
             TModel model = mapper.Map<TModel>(item);
             repository.Create(model);
         }
 
-        public void Update(TEditVM item)
+        public virtual void Update(TEditVM item)
         {
             TModel model = mapper.Map<TModel>(item);
             repository.Update(model);

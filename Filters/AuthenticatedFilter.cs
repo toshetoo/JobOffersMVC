@@ -1,4 +1,5 @@
 ﻿using JobOffersMVC.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -12,7 +13,7 @@ namespace JobOffersMVC.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (AuthService.LoggedUser == null)
+            if (!context.HttpContext.Session.GetInt32("LoggedUserId").HasValue)
             {
                 context.HttpContext.Response.Redirect("/Auth/Login");
                 context.Result = new EmptyResult();

@@ -6,8 +6,10 @@ using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
 using JobOffersMVC.Repositories.Abstraction;
+using JobOffersMVC.Services;
 using JobOffersMVC.Services.Abstractions;
 using JobOffersMVC.ViewModels.Users;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
@@ -70,6 +72,14 @@ namespace JobOffersMVC.Controllers
         {
             service.Delete(id);
             return RedirectToAction("List");
+        }
+
+        public IActionResult Upload(IFormFile ProfileImage)
+        {
+            int userId = HttpContext.Session.GetInt32("LoggedUserId").Value;
+            service.AttachImage(userId, ProfileImage);
+
+            return RedirectToAction("Details", new { id = userId });
         }
     }
 }

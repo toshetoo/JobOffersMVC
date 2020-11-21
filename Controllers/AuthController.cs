@@ -6,6 +6,7 @@ using JobOffersMVC.Services;
 using JobOffersMVC.Services.Abstractions;
 using JobOffersMVC.ViewModels.Auth;
 using JobOffersMVC.ViewModels.Users;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
@@ -37,7 +38,7 @@ namespace JobOffersMVC.Controllers
 
             if (user != null)
             {
-                AuthService.LoggedUser = user;
+                HttpContext.Session.SetInt32("LoggedUserId", user.ID);
                 return RedirectToAction("List", "Users");
             }
 
@@ -66,7 +67,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Logout()
         {
-            AuthService.LoggedUser = null;
+            HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
     }

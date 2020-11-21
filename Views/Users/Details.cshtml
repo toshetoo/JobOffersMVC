@@ -41,6 +41,29 @@
         </dd>
     </dl>
 </div>
+
+<div>
+    <img src="~/images/@Model.ImagePath" alt="@Model.ImagePath" style="width: 300px" />
+</div>
+
+<hr />
+
+<form enctype="multipart/form-data" asp-action="Upload">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="ProfileImage" class="custom-control-label"></label>
+            <div class="custom-file">
+                <input asp-for="ProfileImage" class="custom-file-input" id="customFile" />
+                <label class="custom-file-label" for="customFile">Choose a file</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <button type="submit">Upload</button>
+    </div>
+</form>
+
 <div>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     <a asp-action="List">Back to List</a>
