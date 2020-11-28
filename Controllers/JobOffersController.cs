@@ -77,7 +77,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Details(int id)
         {
-            var item = service.GetDetails(id);
+            var item = service.GetDetailsFullById(id);
             
             if (item == null)
             {

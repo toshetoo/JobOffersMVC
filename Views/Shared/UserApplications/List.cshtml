@@ -16,11 +16,18 @@
             <td>@item.ApplicantName</td>
             <td>@item.JobOfferName</td>
             <td>@item.Status</td>
-            <td>
-                @Html.ActionLink("Accept", "Accept", "UserApplications", new { applicationId = item.ID }) |
-                @Html.ActionLink("Reject", "Reject", "UserApplications", new { applicationId = item.ID }) |
-                @Html.ActionLink("Delete", "Delete", "UserApplications", new { applicationId = item.ID })
-            </td>
+            @if (item.CanEdit)
+            {
+        <td>
+            @if (item.CanAccept)
+            {
+                @Html.ActionLink("Accept", "Accept", "UserApplications", new { applicationId = item.ID })
+            }
+            |
+            @Html.ActionLink("Reject", "Reject", "UserApplications", new { applicationId = item.ID }) |
+            @Html.ActionLink("Delete", "Delete", "UserApplications", new { applicationId = item.ID })
+        </td>
+            }
         </tr>
 }
     </tbody>

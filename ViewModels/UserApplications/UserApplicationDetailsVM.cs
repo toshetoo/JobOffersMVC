@@ -11,6 +11,8 @@ namespace JobOffersMVC.ViewModels.UserApplications
         public string ApplicantName { get; set; }
         public string JobOfferName { get; set; }
 
+        public bool CanEdit { get; set; }
+        public bool CanAccept { get; set; }
         public UserApplicationStatus Status { get; set; }
     }
 }

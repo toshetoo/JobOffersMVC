@@ -58,6 +58,7 @@ namespace JobOffersMVC
             services.AddScoped<IUserApplicationsService, UserApplicationsService>();
 
             services.AddScoped<IFileHelperService, FileHelperService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             services.AddScoped<AuthenticatedFilter>();
             services.AddScoped<NonAuthenticatedFilter>();

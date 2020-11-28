@@ -36,5 +36,25 @@ namespace JobOffersMVC.Services.Implementations
             
             return items.Select(item => mapper.Map<JobOffer, JobOfferDetailsVM>(item)).ToList();
         }
+
+        public JobOfferDetailsVM GetDetailsFullById(int id)
+        {
+            int loggedUserId = contextAccessor.HttpContext.Session.GetInt32("LoggedUserId").Value;
+            JobOffer offer = ((IJobOffersRepository)repository).GetByIdFull(id);
+            JobOfferDetailsVM model = mapper.Map<JobOffer, JobOfferDetailsVM>(offer);
+
+            model.CanApply = offer.CreatorId != loggedUserId && offer.UserApplications.All(ap => ap.UserId != loggedUserId);
+            model.CanEdit = offer.CreatorId == loggedUserId;
+
+            bool canAccept = offer.UserApplications.All(ap => ap.Status != UserApplicationStatus.Accepted);
+
+            model.UserApplications.ForEach(app =>
+            {
+                app.CanEdit = offer.CreatorId == loggedUserId;
+                app.CanAccept = canAccept;
+            });
+
+            return model;
+        }
     }
 }

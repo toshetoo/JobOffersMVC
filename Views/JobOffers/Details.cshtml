@@ -5,7 +5,7 @@
 }
 
 <h1>Details</h1>
-@if (!Model.HasApplied)
+@if (Model.CanApply)
 {
     @Html.ActionLink("Apply to this offer", "Apply", "UserApplications", new { jobOfferId = Model.ID });
 }

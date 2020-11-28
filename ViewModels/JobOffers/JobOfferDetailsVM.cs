@@ -12,7 +12,9 @@ namespace JobOffersMVC.ViewModels.JobOffers
         public string Description { get; set; }
         public string CreatorName { get; set; }
 
-        public bool HasApplied { get; set; }
+        public bool CanApply { get; set; }
+
+        public bool CanEdit { get; set; }
 
         public List<UserApplicationDetailsVM> UserApplications { get; set; }
     }
